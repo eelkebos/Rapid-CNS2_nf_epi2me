@@ -1,0 +1,221 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/areebapatel/Rapid-CNS2_nf/main/nextflow_schema.json",
+    "title": "Rapid-CNS2 pipeline parameters",
+    "description": "Rapid-CNS2 Nextflow analysis pipeline for comprehensive genomic and epigenomic analysis of CNS tumours.",
+    "type": "object",
+    "definitions": {
+        "input_output_options": {
+            "title": "Input/output options",
+            "type": "object",
+            "fa_icon": "fas fa-terminal",
+            "description": "Define where the pipeline should find input data and save output data.",
+            "required": ["input", "id"],
+            "properties": {
+                "input": {
+                    "type": "string",
+                    "format": "path",
+                    "fa_icon": "fas fa-file-medical",
+                    "description": "Path to input BAM file(s). Can be a single aligned BAM file, a directory with aligned BAMs, or a directory with unaligned BAMs.",
+                    "help_text": "Accepted inputs:\n- Single aligned BAM file: `/path/to/sample.bam`\n- Directory with aligned BAMs: `/path/to/aligned_bams/`\n- Directory with unaligned BAMs: `/path/to/unaligned_bams/`"
+                },
+                "id": {
+                    "type": "string",
+                    "fa_icon": "fas fa-tag",
+                    "description": "Unique sample identifier used for naming output files and reports. Should be alphanumeric with no spaces.",
+                    "help_text": "Example: `SAMPLE001`"
+                },
+                "outDir": {
+                    "type": "string",
+                    "default": "output",
+                    "format": "directory-path",
+                    "fa_icon": "fas fa-folder-open",
+                    "description": "Output directory for all pipeline results. Will be created if it doesn't exist."
+                },
+                "tmpDir": {
+                    "type": "string",
+                    "fa_icon": "fas fa-folder",
+                    "description": "Directory for temporary files. Auto-set to `${outDir}/tmp/` unless overridden."
+                },
+                "logDir": {
+                    "type": "string",
+                    "default": "logDir",
+                    "format": "directory-path",
+                    "fa_icon": "fas fa-file-alt",
+                    "description": "Directory for log files."
+                },
+                "patient": {
+                    "type": "string",
+                    "fa_icon": "fas fa-user",
+                    "description": "Patient name for reports. If not specified, uses the --id value."
+                }
+            }
+        },
+        "reference_options": {
+            "title": "Reference and annotation paths",
+            "type": "object",
+            "fa_icon": "fas fa-database",
+            "description": "System-specific paths to reference genomes and annotation databases. These must be configured for your installation.",
+            "properties": {
+                "ref": {
+                    "type": "string",
+                    "format": "file-path",
+                    "fa_icon": "fas fa-dna",
+                    "description": "Path to hg38 reference genome FASTA file.",
+                    "help_text": "Example: `/path/to/references/hg38/hg38.fa`"
+                },
+                "annovarPath": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "fa_icon": "fas fa-folder",
+                    "description": "Path to ANNOVAR installation directory.",
+                    "help_text": "Example: `/path/to/annovar/`"
+                },
+                "annovarDB": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "fa_icon": "fas fa-folder",
+                    "description": "Path to ANNOVAR database directory (humandb/).",
+                    "help_text": "Example: `/path/to/annovar/humandb/`"
+                },
+                "annotsvAnnot": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "fa_icon": "fas fa-folder",
+                    "description": "Path to AnnotSV annotations directory.",
+                    "help_text": "Example: `/path/to/AnnotSV/Annotations_Human/`"
+                },
+                "annotations": {
+                    "type": "string",
+                    "default": "data/refGene.txt",
+                    "format": "file-path",
+                    "fa_icon": "fas fa-file",
+                    "description": "Path to annotation file for IGV reports (refGene.txt.gz)."
+                }
+            }
+        },
+        "resource_options": {
+            "title": "Resource parameters",
+            "type": "object",
+            "fa_icon": "fas fa-microchip",
+            "description": "Control the number of threads allocated to individual analysis steps.",
+            "properties": {
+                "maxThreads": {
+                    "type": "integer",
+                    "default": 64,
+                    "fa_icon": "fas fa-microchip",
+                    "description": "Maximum number of threads for general processes."
+                },
+                "modkitThreads": {
+                    "type": "integer",
+                    "default": 32,
+                    "fa_icon": "fas fa-microchip",
+                    "description": "Number of threads for modkit methylation calling."
+                },
+                "cnvThreads": {
+                    "type": "integer",
+                    "default": 32,
+                    "fa_icon": "fas fa-microchip",
+                    "description": "Number of threads for CNVpytor copy number analysis."
+                },
+                "snifflesThreads": {
+                    "type": "integer",
+                    "default": 32,
+                    "fa_icon": "fas fa-microchip",
+                    "description": "Number of threads for Sniffles2 structural variant calling."
+                },
+                "snpThreads": {
+                    "type": "integer",
+                    "default": 64,
+                    "fa_icon": "fas fa-microchip",
+                    "description": "Number of threads for SNV calling with DeepVariant."
+                },
+                "svThreads": {
+                    "type": "integer",
+                    "default": 64,
+                    "fa_icon": "fas fa-microchip",
+                    "description": "Number of threads for structural variant calling."
+                },
+                "covThreads": {
+                    "type": "integer",
+                    "default": 8,
+                    "fa_icon": "fas fa-microchip",
+                    "description": "Number of threads for coverage calculation with mosdepth."
+                },
+                "methThreads": {
+                    "type": "integer",
+                    "default": 64,
+                    "fa_icon": "fas fa-microchip",
+                    "description": "Number of threads for methylation classification."
+                },
+                "mgmtThreads": {
+                    "type": "integer",
+                    "default": 8,
+                    "fa_icon": "fas fa-microchip",
+                    "description": "Number of threads for MGMT promoter analysis."
+                }
+            }
+        },
+        "analysis_options": {
+            "title": "Analysis parameters",
+            "type": "object",
+            "fa_icon": "fas fa-flask",
+            "description": "Parameters controlling which analyses are run and their thresholds.",
+            "properties": {
+                "minimumMgmtCov": {
+                    "type": "integer",
+                    "default": 5,
+                    "fa_icon": "fas fa-chart-bar",
+                    "description": "Minimum coverage threshold for MGMT promoter methylation analysis. If coverage is below this threshold, MGMT analysis will be skipped."
+                },
+                "bamMinCoverage": {
+                    "type": "integer",
+                    "default": 10,
+                    "fa_icon": "fas fa-chart-bar",
+                    "description": "Minimum coverage threshold for human variation workflow."
+                },
+                "mnpFlex": {
+                    "type": "boolean",
+                    "default": false,
+                    "fa_icon": "fas fa-toggle-on",
+                    "description": "Enable MNP-Flex classifier input preparation. Creates files needed for external MNP-Flex analysis at mnp-flex.org."
+                },
+                "runHumanVariation": {
+                    "type": "boolean",
+                    "default": false,
+                    "fa_icon": "fas fa-toggle-on",
+                    "description": "Enable wf-human-variation SNP and SV pipeline. Adds additional variant calling workflows."
+                }
+            }
+        },
+        "container_options": {
+            "title": "Container and system parameters",
+            "type": "object",
+            "fa_icon": "fab fa-docker",
+            "description": "Parameters for container engine and sequencer platform.",
+            "properties": {
+                "containerEngine": {
+                    "type": "string",
+                    "default": "docker",
+                    "fa_icon": "fab fa-docker",
+                    "description": "Container engine to use.",
+                    "enum": ["docker", "singularity"]
+                },
+                "seq": {
+                    "type": "string",
+                    "default": "P2",
+                    "fa_icon": "fas fa-microscope",
+                    "description": "Sequencer platform identifier. Auto-detected from BAM headers, but can be manually set.",
+                    "help_text": "Example values: `P2` (PromethION 2), `F` (Flongle)"
+                }
+            }
+        }
+    },
+    "allOf": [
+        { "$ref": "#/definitions/input_output_options" },
+        { "$ref": "#/definitions/reference_options" },
+        { "$ref": "#/definitions/resource_options" },
+        { "$ref": "#/definitions/analysis_options" },
+        { "$ref": "#/definitions/container_options" }
+    ]
+}
